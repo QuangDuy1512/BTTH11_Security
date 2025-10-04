@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
+</head>
+<body>
+<h2>🏠 Welcome!</h2>
+
+<!-- Khi người dùng đã đăng nhập -->
+<div sec:authorize="isAuthenticated()">
+    <p>
+        Xin chào <b sec:authentication="name"></b> |
+        Quyền của bạn: <span sec:authentication="principal.authorities"></span>
+    </p>
+
+    <!-- Form logout đúng chuẩn (có CSRF) -->
+    <form th:action="@{/logout}" method="post" style="display:inline">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit">Đăng xuất</button>
+    </form>
+</div>
+
+<!-- Khi người dùng chưa đăng nhập -->
+<div sec:authorize="isAnonymous()">
+    <a th:href="@{/login}">Đăng nhập</a>
+</div>
+
+<hr>
+
+<!-- Khu vực riêng cho admin -->
+<div sec:authorize="hasRole('ADMIN')">
+    <h3>🔧 Quản lý sản phẩm</h3>
+    <a th:href="@{/products}">Xem danh sách sản phẩm</a>
+</div>
+
+<!-- Khu vực dành cho user thông thường -->
+<div sec:authorize="hasRole('USER')">
+    <h3>👤 Khu vực người dùng</h3>
+    <p>Bạn đang đăng nhập với quyền USER.</p>
+</div>
+
+<hr>
+<p><i>Spring Security 6 + Thymeleaf Demo</i></p>
+
+</body>
+</html>
